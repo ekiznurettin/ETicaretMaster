@@ -1,0 +1,45 @@
+﻿@model CategoryListViewModel
+@{
+    ViewData["Title"] = "Kategori Listesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="panel">
+        <div class="panel-body">
+            <table class="table table-bordered table-striped mb-none" id="datatable-tabletools">
+                <thead>
+                    <tr role="row">
+                        <th><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th>
+                        <th>Sıra No</th>
+                        <th>Kategori Adı</th>
+                        <th>Kategori Açıklaması</th>
+                        <th>
+                            <a onclick="showInPopup('@Url.Action("AddOrEdit","Category",null,Context.Request.Scheme)','Yeni Kategori')" class="btn btn-success btn-sm">Yeni Kategori</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                        @foreach (var category in Model.Categories.Data)
+                        {
+                    <tr role="row">
+                        <td><input class="form-check-input" type="checkbox" value="" id="@category.CategoryId"></td>
+                        <td>@i</td>
+                        <td>@category.CategoryName</td>
+                        <td>@category.Description</td>
+                        <td>
+                            <a onclick="showInPopup('@Url.Action("Delete","Category", new { id = category.CategoryId },Context.Request.Scheme)','Silme İşlemi')" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
+                            <a onclick="showInPopup('@Url.Action("AddOrEdit","Category", new { id = category.CategoryId },Context.Request.Scheme)','Kategori Güncelle')" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
+                            <a onclick="showInPopup('@Url.Action("AddOrEdit","Category", new { id = category.CategoryId  },Context.Request.Scheme)','Kategori Güncelle')" class="btn btn-info btn-sm"><i class="fa fa-eye"></i></a>
+                        </td>
+                    </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+

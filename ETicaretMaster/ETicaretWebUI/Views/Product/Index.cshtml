@@ -1,0 +1,93 @@
+﻿@model ProductListViewModel
+@{
+    ViewData["Title"] = "Ürün Listesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js" rel="stylesheet" />
+<link type="text/css" href="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css" rel="stylesheet" />
+<section class="panel">
+    <div class="panel-body">
+        <form id="myForm" method="post">
+            <table class="table table-bordered table-striped mb-none" id="datatable-tabletools">
+                <thead>
+                    <tr role="row">
+                        <th></th>
+                        <th>Sıra</th>
+                        <th>Ürün Adı</th>
+                        <th>Kategori Adı</th>
+                        <th>Stok Adedi</th>
+                        <th>Ürün Fiyatı</th>
+                        <th>Ürün Bilgisi</th>
+
+                        <th>
+                            <a onclick="showInPopup('@Url.Action("AddOrEdit","Product",null,Context.Request.Scheme)','Yeni Ürün')" class="btn btn-success btn-sm">Yeni Ürün</a>
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                        @foreach (var product in Model.Products.Data)
+                        {
+                            <tr role="row">
+                                <td></td>
+                                <td>@i</td>
+                                <td>@product.ProductName</td>
+                                <td>@product.CategoryName</td>
+                                <td>@product.UnitsInStock</td>
+                                <td>@product.UnitPrice</td>
+                                <td>@product.QuantityPerUnit</td>
+
+                                <td>
+                                    <a onclick="showInPopup('@Url.Action("Delete","Product", new { id = product.ProductId },Context.Request.Scheme)','Silme İşlemi')" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
+                                    <a onclick="showInPopup('@Url.Action("AddOrEdit","Product", new { id = product.ProductId },Context.Request.Scheme)','Ürün Güncelle')" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
+                                    <a onclick="showInPopup('@Url.Action("AddOrEdit","Product", new { id = product.ProductId },Context.Request.Scheme)','Ürün Güncelle')" class="btn btn-info btn-sm"><i class="fa fa-eye"></i></a>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </form>
+    </div>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https: //cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var myTable = $("#datatable-tabletools").DataTable({
+            ajax: 'data.json',
+            columnDefs: [
+                {
+                    targets: 0,
+                    checkboxes: {
+                        selectRow: true
+                    }
+                }
+            ],
+            select: {
+                style: 'multi'
+            },
+            order: [[1, 'asc']]
+        })
+        $("#myForm").on('submit', function (e) {
+            var form = this
+            var rowsel = myTable.column(0).checkboxes.selected();
+            $.each(rowsel, function (index, rowId) {
+                $(form).append(
+                    $('<input>').attr('type', 'hidden').attr('name', 'id[]').val(rowId)
+                )
+            })
+            $("#view-rows").text(rowsel.join(","))
+            $("#view-rows").text($(form).serialize())
+            $('input[name="id\[\]"]', form).remove()
+            e.preventDefault()
+        })
+    })
+</script>
